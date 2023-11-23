@@ -1,23 +1,17 @@
-// CustomerForm.tsx
 import React, { useState } from 'react';
-import { FormContainer, FormLabel, FormInput, FormButton } from './CustomerForm.styles';
+import { FormContainer, StyledForm, FormLabel, FormInput, FormButton } from './CustomerForm.styles';
 
+interface ServiceValues {
+  code: number;
+  date: string;
+  cost: number;
+}
 interface CustomerFormProps {
-  onSave: (
-    firstName: string,
-    lastName: string,
-    make: string,
-    desc: string,
-    serviceValues: {
-      code: number;
-      date: string;
-      cost: number;
-    },
-  ) => void;
-  isSaving: boolean;
+  onSave: (firstName: string, lastName: string, make: string, desc: string, serviceValues: ServiceValues) => void;
+  // isSaving: boolean;
 }
 
-const CustomerForm: React.FC<CustomerFormProps> = ({ onSave, isSaving }) => {
+const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [make, setMake] = useState<string>('');
@@ -26,66 +20,138 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave, isSaving }) => {
   const [cost, setCost] = useState<number>(0);
   const [desc, setDesc] = useState<string>('');
   const [date, setDate] = useState<string>('');
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = () => {
-    const serviceValues = {
-      code: code,
-      date: date,
-      cost: cost,
-    };
+  const isFormValid = () => {
+    return !isNaN(code) && !isNaN(cost) && date.trim() !== '';
+  };
 
-    onSave(firstName, lastName, make, model, serviceValues);
-    // Reset form fields
-    setFirstName('');
-    setLastName('');
-    setMake('');
-    setModel('');
-    setCode(0);
-    setCost(0);
-    setDesc('');
-    setDate('');
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (isFormValid()) {
+      const serviceValues: ServiceValues = {
+        code,
+        date,
+        cost,
+      };
+      setIsSaving(true);
+      setTimeout(() => {
+        onSave(firstName, lastName, make, model, serviceValues);
+        setFirstName('');
+        setLastName('');
+        setMake('');
+        setModel('');
+        setCode(0);
+        setCost(0);
+        setDesc('');
+        setDate('');
+        setIsSaving(false);
+      }, 2000);
+    } else {
+      alert('Please fill in all required fields with valid values.');
+    }
   };
 
   return (
     <FormContainer>
-      <h2>Add New Service</h2>
-      <form>
+      <h2>Log new customer visit</h2>
+      <StyledForm onSubmit={handleSave}>
         <FormLabel>
-          FirstName:
-          <FormInput type="text" value={firstName} onChange={e => setFirstName(e.target.value)} />
+          First Name:
+          <FormInput
+            id="firstName"
+            type="text"
+            value={firstName}
+            onChange={e => setFirstName(e.target.value)}
+            placeholder="Enter your first name"
+          />
         </FormLabel>
+
         <FormLabel>
-          LastName:
-          <FormInput type="text" value={lastName} onChange={e => setLastName(e.target.value)} />
+          Last Name:
+          <FormInput
+            id="lastName"
+            type="text"
+            value={lastName}
+            onChange={e => setLastName(e.target.value)}
+            placeholder="Enter your last name"
+          />
         </FormLabel>
+
         <FormLabel>
           Make:
-          <FormInput type="text" value={make} onChange={e => setMake(e.target.value)} />
+          <FormInput
+            id="make"
+            type="text"
+            value={make}
+            onChange={e => setMake(e.target.value)}
+            placeholder="Enter make"
+          />
         </FormLabel>
+
         <FormLabel>
           Model:
-          <FormInput type="text" value={model} onChange={e => setModel(e.target.value)} />
+          <FormInput
+            id="model"
+            type="text"
+            value={model}
+            onChange={e => setModel(e.target.value)}
+            placeholder="Enter model"
+          />
         </FormLabel>
+
         <FormLabel>
           Code:
-          <FormInput type="number" value={code} onChange={e => setCode(Number(e.target.value))} />
+          <FormInput
+            id="code"
+            type="number"
+            value={code}
+            onChange={e => setCode(Number(e.target.value))}
+            placeholder="Enter code"
+            required
+          />
         </FormLabel>
+
         <FormLabel>
-          Desc:
-          <FormInput type="text" value={desc} onChange={e => setDesc(e.target.value)} />
+          Description:
+          <FormInput
+            id="desc"
+            type="text"
+            value={desc}
+            onChange={e => setDesc(e.target.value)}
+            placeholder="Enter description"
+          />
         </FormLabel>
+
         <FormLabel>
           Date:
-          <FormInput type="text" value={date} onChange={e => setDate(e.target.value)} />
+          <FormInput
+            id="date"
+            type="date"
+            value={date}
+            onChange={e => setDate(e.target.value)}
+            placeholder="Enter date"
+            required
+          />
         </FormLabel>
+
         <FormLabel>
           Cost:
-          <FormInput type="number" value={cost} onChange={e => setCost(Number(e.target.value))} />
+          <FormInput
+            id="cost"
+            type="number"
+            value={cost}
+            onChange={e => setCost(Number(e.target.value))}
+            placeholder="Enter cost"
+            required
+          />
         </FormLabel>
-        <FormButton type="button" onClick={handleSave} disabled={isSaving}>
+
+        <FormButton type="submit" disabled={isSaving}>
           {isSaving ? 'Saving...' : 'Save'}
         </FormButton>
-      </form>
+      </StyledForm>
     </FormContainer>
   );
 };

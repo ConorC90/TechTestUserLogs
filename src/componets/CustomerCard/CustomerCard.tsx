@@ -1,26 +1,19 @@
 // components/CustomerCard.tsx
 import React from 'react';
-import { CardContainer, ServiceList, ServiceListItem } from './CustomerCard.styles';
+import {
+  CardContainer,
+  ServiceList,
+  ServiceListItem,
+  ServiceDetailsList,
+  ServiceDetailsListItem,
+} from './CustomerCard.styles';
+import CustomerType from '../../sharedInterfaces/CustomerType';
 
-interface Customer {
-  firstName: string;
-  lastName: string;
-  year: number;
-  make: string;
-  model: string;
-  services: Array<{
-    code: number;
-    desc: string;
-    date: string;
-    cost: number;
-  }>;
-}
-
-const CustomerCard: React.FC<{ customer: Customer }> = ({ customer }) => {
+const CustomerCard: React.FC<{ customer: CustomerType }> = ({ customer }) => {
   if (!customer) {
     return <div>No customer data</div>;
   }
-  console.log(customer, 'customer');
+
   return (
     <>
       <CardContainer>
@@ -30,12 +23,12 @@ const CustomerCard: React.FC<{ customer: Customer }> = ({ customer }) => {
         <ServiceList>
           {customer.services.map((service: any, index: number) => (
             <ServiceListItem key={index}>
-              <ul>
-                <li>Description: ${service.desc}</li>
-                <li>Code: ${service.code}</li>
-                <li>Date: ${service.date}</li>
-                <li>Cost: $${service.cost}</li>
-              </ul>
+              <ServiceDetailsList>
+                <ServiceDetailsListItem>Description: {service.desc}</ServiceDetailsListItem>
+                <ServiceDetailsListItem>Code: {service.code}</ServiceDetailsListItem>
+                <ServiceDetailsListItem>Date: {service.date}</ServiceDetailsListItem>
+                <ServiceDetailsListItem>Cost: ${service.cost}</ServiceDetailsListItem>
+              </ServiceDetailsList>
             </ServiceListItem>
           ))}
         </ServiceList>

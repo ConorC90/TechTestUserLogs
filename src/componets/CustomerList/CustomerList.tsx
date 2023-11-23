@@ -1,24 +1,9 @@
-// CustomerList.tsx
 import React from 'react';
 import { CustomerListContainer } from './CustomerList.styles';
 import CardContainer from '../CustomerCard/CustomerCard';
-
-interface Customer {
-  firstName: string;
-  lastName: string;
-  year: number;
-  make: string;
-  model: string;
-  services: Array<{
-    code: number;
-    desc: string;
-    date: string;
-    cost: number;
-  }>;
-}
-
+import CustomerType from '../../sharedInterfaces/CustomerType';
 interface CustomerListProps {
-  customers: Customer[];
+  customers: CustomerType[];
 }
 
 const CustomerList: React.FC<CustomerListProps> = ({ customers }) => {

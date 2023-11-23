@@ -9,9 +9,17 @@ export const CardContainer = styled.div`
   margin-bottom: 20px;
 `;
 export const ServiceList = styled.ol`
-  padding: 10px;
+  margin: 5px;
 `;
 
 export const ServiceListItem = styled.li`
+  margin-bottom: 5px;
+`;
+
+export const ServiceDetailsList = styled.ul`
+  list-style: none;
+  padding: 10px;
+`;
+export const ServiceDetailsListItem = styled.li`
   margin-bottom: 5px;
 `;

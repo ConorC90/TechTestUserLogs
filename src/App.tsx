@@ -1,8 +1,12 @@
-// App.tsx
 import React, { useState, useEffect } from 'react';
 import CustomerList from './componets/CustomerList/CustomerList';
 import CustomerForm from './componets/CustomerForm/CustomerForm';
 import GlobalStyle from './styles/GlobalStyle';
+import Modal from 'react-modal';
+import ModalFormButton from './componets/ModalFormButton/ModalFormButton';
+import CustomerType from './sharedInterfaces/CustomerType';
+// import Header from './componets/Header/Header';
+import SearchBar from './componets/SearchBar/SearchBar';
 
 // Customer data
 const customers = [
@@ -52,11 +56,21 @@ const App: React.FC = () => {
   const storedCustomers = localStorage.getItem('customers');
   const initialCustomers = storedCustomers ? JSON.parse(storedCustomers) : customers;
   const [customersState, setCustomers] = useState(initialCustomers);
-  const [isSaving, setIsSaving] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     localStorage.setItem('customers', JSON.stringify(customersState));
   }, [customersState]);
+
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
 
   const handleSave = async (
     firstName: string,
@@ -65,11 +79,6 @@ const App: React.FC = () => {
     model: string,
     serviceValues: { code: number; date: string; cost: number },
   ) => {
-    setIsSaving(true);
-    // Simulate async save
-
-    // await promiseDelay(3000);
-    // Update state with new service
     setCustomers((prevCustomers: any) => [
       ...prevCustomers,
       {
@@ -81,7 +90,16 @@ const App: React.FC = () => {
         services: [serviceValues],
       },
     ]);
-    setIsSaving(false);
+  };
+
+  const filteredCustomers = customersState.filter((customer: CustomerType) => {
+    const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
+    return fullName.includes(searchTerm.toLowerCase());
+  });
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    // Add any additional search-related logic if needed
   };
 
   return (
@@ -89,9 +107,20 @@ const App: React.FC = () => {
       <GlobalStyle />
       <div className="app-container">
         <div className="content-container">
+          {/* <Header></Header> */}
           <h1>Auto Repair Shop App</h1>
-          <CustomerList customers={customersState} />
-          <CustomerForm onSave={handleSave} isSaving={isSaving} />
+          <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+          <input
+            type="text"
+            placeholder="Search by customer name"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
+          <CustomerList customers={filteredCustomers} />
+          <ModalFormButton onClick={modalIsOpen ? closeModal : openModal} modalIsOpen={modalIsOpen}></ModalFormButton>
+          <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Example Modal">
+            <CustomerForm onSave={handleSave} />
+          </Modal>
         </div>
       </div>
     </>
