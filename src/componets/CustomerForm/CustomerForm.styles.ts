@@ -6,6 +6,7 @@ export const FormContainer = styled.div`
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  z-index: 15;
 `;
 
 export const FormLabel = styled.label`
@@ -19,22 +20,6 @@ export const FormInput = styled.input`
   padding: 10px;
 `;
 
-export const FormButton = styled.button`
-  width: 100%;
-  box-sizing: border-box;
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  margin-top: 15px;
-
-  &:disabled {
-    background-color: #ddd;
-    color: #555;
-    cursor: not-allowed;
-  }
-`;
 export const FormRow = styled.div`
   margin-top: 20px;
   width: 100%;

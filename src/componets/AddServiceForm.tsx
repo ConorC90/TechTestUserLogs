@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Button from './Button';
 
 type Service = {
   code: number;
@@ -53,9 +54,10 @@ const AddServiceForm: React.FC<AddServiceFormProps> = ({ onSave }) => {
         Cost:
         <input type="number" value={cost} onChange={e => setCost(Number(e.target.value))} />
       </label>
-      <button type="submit" disabled={isSaving}>
+      <Button type="submit" disabled={isSaving}>
         {isSaving ? 'Saving...' : 'Save Service'}
-      </button>
+      </Button>
+      <Button size={'small'}>Hello</Button>
     </form>
   );
 };

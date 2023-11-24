@@ -1,56 +1,80 @@
 import React, { useState } from 'react';
-import { FormContainer, StyledForm, FormLabel, FormInput, FormButton } from './CustomerForm.styles';
+import { FormContainer, StyledForm, FormLabel, FormInput } from './CustomerForm.styles';
+import Button from '../Button';
+import WarningMessage from '../WarningMessage';
 
 interface ServiceValues {
-  code: number;
+  code: number | undefined;
   date: string;
-  cost: number;
+  cost: number | undefined;
 }
 interface CustomerFormProps {
-  onSave: (firstName: string, lastName: string, make: string, desc: string, serviceValues: ServiceValues) => void;
-  // isSaving: boolean;
+  onSave: (
+    serviceValues: ServiceValues,
+    firstName: string,
+    lastName: string,
+    make: string,
+    model: string,
+    year: number,
+  ) => void;
 }
 
 const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
+  const [year, setYear] = useState<number>(0);
   const [make, setMake] = useState<string>('');
   const [model, setModel] = useState<string>('');
-  const [code, setCode] = useState<number>(0);
-  const [cost, setCost] = useState<number>(0);
+  const [code, setCode] = useState<number | undefined>(undefined);
+  const [cost, setCost] = useState<number | undefined>(undefined);
   const [desc, setDesc] = useState<string>('');
   const [date, setDate] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
-
-  const isFormValid = () => {
-    return !isNaN(code) && !isNaN(cost) && date.trim() !== '';
-  };
+  const [missingFields, setMissingFields] = useState<string[]>([]);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isFormValid()) {
+    if (validateForm()) {
       const serviceValues: ServiceValues = {
         code,
-        date,
         cost,
+        date,
       };
       setIsSaving(true);
       setTimeout(() => {
-        onSave(firstName, lastName, make, model, serviceValues);
-        setFirstName('');
-        setLastName('');
-        setMake('');
-        setModel('');
-        setCode(0);
-        setCost(0);
-        setDesc('');
-        setDate('');
+        onSave(serviceValues, firstName, lastName, make, model, year);
+        resetForm();
         setIsSaving(false);
-      }, 2000);
-    } else {
-      alert('Please fill in all required fields with valid values.');
+      }, 20000);
     }
+  };
+
+  const validateForm = () => {
+    const requiredFields = [
+      { value: code, label: 'Code' },
+      { value: date, label: 'Date' },
+      { value: cost, label: 'Cost' },
+    ];
+
+    const missing = requiredFields.filter(field => {
+      return field.value === '' || (typeof field.value === 'number' && isNaN(field.value));
+    });
+
+    setMissingFields(missing.map(field => field.label));
+    return missing.length === 0;
+  };
+  const resetForm = () => {
+    setFirstName('');
+    setLastName('');
+    setMake('');
+    setModel('');
+    setYear(0);
+    setCode(undefined);
+    setCost(undefined);
+    setDesc('');
+    setDate('');
+    setMissingFields([]);
   };
 
   return (
@@ -65,6 +89,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
             value={firstName}
             onChange={e => setFirstName(e.target.value)}
             placeholder="Enter your first name"
+            disabled={isSaving}
           />
         </FormLabel>
 
@@ -76,6 +101,22 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
             value={lastName}
             onChange={e => setLastName(e.target.value)}
             placeholder="Enter your last name"
+            disabled={isSaving}
+          />
+        </FormLabel>
+
+        <FormLabel>
+          Year:
+          <FormInput
+            id="make"
+            type="number"
+            value={year}
+            onChange={e => setYear(Number(e.target.value))}
+            onFocus={e => {
+              e.target.value = '';
+            }}
+            placeholder="Enter year"
+            disabled={isSaving}
           />
         </FormLabel>
 
@@ -87,6 +128,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
             value={make}
             onChange={e => setMake(e.target.value)}
             placeholder="Enter make"
+            disabled={isSaving}
           />
         </FormLabel>
 
@@ -98,6 +140,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
             value={model}
             onChange={e => setModel(e.target.value)}
             placeholder="Enter model"
+            disabled={isSaving}
           />
         </FormLabel>
 
@@ -108,7 +151,11 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
             type="number"
             value={code}
             onChange={e => setCode(Number(e.target.value))}
+            onFocus={e => {
+              e.target.value = '';
+            }}
             placeholder="Enter code"
+            disabled={isSaving}
             required
           />
         </FormLabel>
@@ -121,6 +168,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
             value={desc}
             onChange={e => setDesc(e.target.value)}
             placeholder="Enter description"
+            disabled={isSaving}
           />
         </FormLabel>
 
@@ -132,6 +180,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
             value={date}
             onChange={e => setDate(e.target.value)}
             placeholder="Enter date"
+            disabled={isSaving}
             required
           />
         </FormLabel>
@@ -143,15 +192,23 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
             type="number"
             value={cost}
             onChange={e => setCost(Number(e.target.value))}
+            onFocus={e => {
+              e.target.value = '';
+            }}
             placeholder="Enter cost"
+            disabled={isSaving}
             required
           />
         </FormLabel>
-
-        <FormButton type="submit" disabled={isSaving}>
+        <Button fullWidth size="small" color={'green'} type="submit" disabled={isSaving}>
           {isSaving ? 'Saving...' : 'Save'}
-        </FormButton>
+        </Button>
       </StyledForm>
+      {missingFields.length > 0 && (
+        <WarningMessage
+          message={`Please fill in the following required fields: ${missingFields.join(', ')}`}
+        ></WarningMessage>
+      )}
     </FormContainer>
   );
 };

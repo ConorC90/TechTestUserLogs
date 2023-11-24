@@ -11,11 +11,12 @@ const StyledButton = styled(Button)`
 `;
 
 interface ModalFormButtonType {
-  onClick: () => void;
+  onClick: any;
   modalIsOpen: boolean;
 }
 
 const ModalFormButton: React.FC<ModalFormButtonType> = ({ onClick, modalIsOpen }) => {
+  console.log(onClick, modalIsOpen, 'onClick');
   return (
     <StyledButton color={modalIsOpen ? 'red' : 'green'} onClick={onClick}>
       {modalIsOpen ? 'Close' : 'Add Service log'}

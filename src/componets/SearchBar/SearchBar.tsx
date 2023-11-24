@@ -8,21 +8,19 @@ interface SearchBarProps {
 
 const StickyNavBar = styled.div`
   position: sticky;
+  width: 100%;
   top: 0;
   background-color: #f1f1f1;
   padding: 10px;
   text-align: center;
-  z-index: 100;
 `;
 
 const SearchInput = styled.input`
-  margin-top: 10px;
   padding: 8px;
 `;
 
 const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, onSearchChange }) => (
   <StickyNavBar>
-    <h1>Auto Repair Shop App</h1>
     <SearchInput
       type="text"
       placeholder="Search by customer name"
