@@ -7,96 +7,53 @@ import ModalFormButton from './componets/ModalFormButton/ModalFormButton';
 import CustomerType from './sharedInterfaces/CustomerType';
 import SearchBar from './componets/SearchBar';
 import { useModalContext } from './contexts/ModalContext';
-
-// Customer data
-const customers = [
-  {
-    firstName: 'Kathy',
-    lastName: 'Barker',
-    year: 2016,
-    make: 'Ford',
-    model: 'Focus',
-    services: [
-      { code: 1001, desc: 'Oil change', date: 'January 25, 2019', cost: 20.71 },
-      { code: 1001, desc: 'Oil change', date: 'April 3, 2019', cost: 22.13 },
-      { code: 1001, desc: 'Oil change', date: 'August 5, 2019', cost: 22.13 },
-      { code: 1009, desc: 'Brake pad replacement', date: 'August 5, 2019', cost: 258.41 },
-    ],
-  },
-  {
-    firstName: 'Ralph',
-    lastName: 'Benson',
-    year: 2014,
-    make: 'Honda',
-    model: 'Civic',
-    services: [
-      { code: 1001, desc: 'Oil change', date: 'March 13, 2019', cost: 36.42 },
-      { code: 1003, desc: 'A/C recharge', date: 'March 13, 2019', cost: 206.14 },
-    ],
-  },
-  {
-    firstName: 'Bob',
-    lastName: 'Douglas',
-    year: 2016,
-    make: 'Ford',
-    model: 'F-150',
-    services: [{ code: 1005, desc: "Tire patch (driver's side front)", date: 'May 12, 2020', cost: 0 }],
-  },
-  {
-    firstName: 'Omar',
-    lastName: 'Adams',
-    year: 2017,
-    make: 'Kia',
-    model: 'Sorento',
-    services: [{ code: 1006, desc: 'Rough shift from 2nd to 3rd', date: 'May 5, 2020', cost: 223.43 }],
-  },
-];
+import FileUpload from './componets/FileUploader';
 
 const App: React.FC = () => {
   const storedCustomers = localStorage.getItem('customers');
-  const initialCustomers = storedCustomers ? JSON.parse(storedCustomers) : customers;
-  const [customersState, setCustomers] = useState(initialCustomers);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [services, setServices] = useState(customersState.services);
+  const [uploadedData, setUploadedData] = useState<CustomerType[]>([]);
+  const initialCustomers = storedCustomers ? JSON.parse(storedCustomers) : uploadedData;
+  const [customersState, setCustomers] = useState(initialCustomers);
 
   useEffect(() => {
     localStorage.setItem('customers', JSON.stringify(customersState));
   }, [customersState]);
 
-  const { closeModal, openModal, modalIsOpen } = useModalContext();
+  const { closeModal, openModal, modalIsOpen, setLocation, customerIndex } = useModalContext();
 
-  const handleSave = async (
-    firstName: string,
-    lastName: string,
-    make: string,
-    model: string,
-    year: number,
-    serviceValues: { code: number | undefined; date: string; cost: number | undefined },
-  ) => {
-    setCustomers((prevCustomers: CustomerType[]) => [
-      ...prevCustomers,
-      {
-        firstName: firstName,
-        lastName: lastName,
-        year: year,
-        make: make,
-        model: model,
-        services: [serviceValues],
-      },
-    ]);
+  const handleDataUpload = (data: any[]) => {
+    setUploadedData(data);
   };
 
-  const handleServiceSave = async (serviceValues: {
-    code: number | undefined;
-    date: string;
-    cost: number | undefined;
-  }) => {
-    setServices((prevServices: any[]) => [
-      ...prevServices,
-      {
-        services: [serviceValues],
-      },
-    ]);
+  const handleSave = async (
+    serviceValues: { code: number | string; date: string; cost: number | string },
+    firstName?: string,
+    lastName?: string,
+    make?: string,
+    model?: string,
+    year?: number,
+  ) => {
+    if (customerIndex || customerIndex === 0) {
+      const newCustomerArray = [...filteredCustomers];
+      newCustomerArray[customerIndex] = {
+        ...newCustomerArray[customerIndex],
+        services: [...newCustomerArray[customerIndex].services, serviceValues],
+      };
+      setCustomers(newCustomerArray);
+    } else {
+      setCustomers((prevCustomers: CustomerType[]) => [
+        ...prevCustomers,
+        {
+          firstName: firstName,
+          lastName: lastName,
+          year: year,
+          make: make,
+          model: model,
+          services: [serviceValues],
+        },
+      ]);
+    }
   };
 
   const filteredCustomers = customersState.filter((customer: CustomerType) => {
@@ -108,17 +65,32 @@ const App: React.FC = () => {
     setSearchTerm(value);
   };
 
+  const handleButtonClick = () => {
+    openModal();
+    setLocation('addCustomer');
+  };
+
+  const dataConfig: any = {
+    firstName: 'First name',
+    lastName: 'Last name',
+    year: 'Year',
+    make: 'Make',
+    model: 'Model',
+    services: ['Code', 'Desc', 'Date', 'Cost'],
+  };
+
   return (
     <>
       <GlobalStyle />
       <div className="app-container">
         <div className="content-container">
           <h1>Auto Repair Shop App</h1>
-          <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+          <FileUpload config={dataConfig} onDataUpload={handleDataUpload} />
+          {customersState.length > 0 && <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />}
 
           <CustomerList customers={filteredCustomers} />
           <ModalFormButton
-            onClick={modalIsOpen ? closeModal : openModal('addCustomer')}
+            onClick={modalIsOpen ? closeModal : handleButtonClick}
             modalIsOpen={modalIsOpen}
           ></ModalFormButton>
           <Modal
@@ -127,7 +99,7 @@ const App: React.FC = () => {
             contentLabel="New service entry Modal"
             appElement={document.getElementById('root') as HTMLElement}
           >
-            <CustomerForm onSave={handleServiceSave} />
+            <CustomerForm onSave={handleSave} />
           </Modal>
         </div>
       </div>

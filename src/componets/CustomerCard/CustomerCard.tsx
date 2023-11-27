@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   CardContainer,
   ServiceList,
@@ -6,6 +6,7 @@ import {
   ServiceDetailsList,
   ServiceDetailsListItem,
   StyledTable,
+  CardHeader,
 } from './CustomerCard.styles';
 import CustomerType from '../../sharedInterfaces/CustomerType';
 import ServiceType from '../../sharedInterfaces/ServiceType';
@@ -13,18 +14,8 @@ import WarningMessage from '../WarningMessage';
 import Button from '../Button';
 import { useModalContext } from '../../contexts/ModalContext';
 
-const CustomerCard: React.FC<{ customer: CustomerType }> = ({ customer }) => {
-  const { openModal } = useModalContext();
-  const [services, setServices] = useState(customer.services);
-
-  const handleSave = async (serviceValues: { code: number | undefined; date: string; cost: number | undefined }) => {
-    setServices((prevServices: any[]) => [
-      ...prevServices,
-      {
-        services: [{ code: 122, date: '1990 / 12 / 12', cost: 789 }],
-      },
-    ]);
-  };
+const CustomerCard: React.FC<{ customer: CustomerType; customerIndex: number }> = ({ customer, customerIndex }) => {
+  const { openModal, setLocation, setCustomerindex } = useModalContext();
 
   if (!customer) {
     return (
@@ -34,12 +25,20 @@ const CustomerCard: React.FC<{ customer: CustomerType }> = ({ customer }) => {
     );
   }
 
+  const handelButtonClick = () => {
+    setCustomerindex(customerIndex);
+    setLocation('addService');
+    openModal();
+  };
+
   return (
     <CardContainer>
-      <h2>{`${customer.firstName} ${customer.lastName}`}</h2>
-      <Button onClick={openModal('addService')} size="small">
-        Add a service
-      </Button>
+      <CardHeader>
+        <h2>{`${customer.firstName} ${customer.lastName}`}</h2>
+        <Button onClick={handelButtonClick} size="small">
+          Add a service
+        </Button>
+      </CardHeader>
       <StyledTable>
         <tbody>
           <tr>
@@ -56,9 +55,9 @@ const CustomerCard: React.FC<{ customer: CustomerType }> = ({ customer }) => {
           </tr>
         </tbody>
       </StyledTable>
-      {services.length === 1 ? 'Service:' : 'Services:'}
+      {customer.services.length === 1 ? 'Service:' : 'Services:'}
       <ServiceList>
-        {services.map((service: ServiceType, index: number) => (
+        {customer.services.map((service: ServiceType, index: number) => (
           <ServiceListItem key={index}>
             <ServiceDetailsList>
               <ServiceDetailsListItem>Description: {service.desc}</ServiceDetailsListItem>

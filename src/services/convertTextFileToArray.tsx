@@ -7,7 +7,6 @@ interface Config {
 }
 
 const convertTextFileToArray = async (filePath: string, config: Config) => {
-  console.log(filePath, 'filePath');
   try {
     const response = await fetch(filePath);
 

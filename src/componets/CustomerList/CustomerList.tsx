@@ -14,7 +14,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ customers }) => {
   return (
     <CustomerListContainer>
       {customers.map((customer, index) => (
-        <CardContainer customer={customer} key={index}></CardContainer>
+        <CardContainer customerIndex={index} customer={customer} key={index}></CardContainer>
       ))}
     </CustomerListContainer>
   );

@@ -8,6 +8,13 @@ export const CardContainer = styled.div`
   padding: 20px;
   margin-bottom: 20px;
 `;
+
+export const CardHeader = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
+
 export const ServiceList = styled.ol`
   margin: 5px;
 `;

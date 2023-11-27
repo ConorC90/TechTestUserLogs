@@ -24,6 +24,7 @@ const StyledButton = styled.button<ButtonProps>`
   color: white;
   padding: ${props => buttonSize[props.size || 'medium']};
   border: none;
+  height: fit-content;
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
   width: ${props => (props.fullWidth ? '100%' : 'auto')};
   transition: background-color 0.3s ease;

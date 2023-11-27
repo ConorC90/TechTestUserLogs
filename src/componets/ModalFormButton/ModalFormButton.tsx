@@ -1,4 +1,3 @@
-// YourFormComponentButton.tsx
 import React from 'react';
 import styled from 'styled-components';
 import Button from '../Button';
@@ -16,10 +15,9 @@ interface ModalFormButtonType {
 }
 
 const ModalFormButton: React.FC<ModalFormButtonType> = ({ onClick, modalIsOpen }) => {
-  console.log(onClick, modalIsOpen, 'onClick');
   return (
     <StyledButton color={modalIsOpen ? 'red' : 'green'} onClick={onClick}>
-      {modalIsOpen ? 'Close' : 'Add Service log'}
+      {modalIsOpen ? 'Close' : 'Add new Customer'}
     </StyledButton>
   );
 };

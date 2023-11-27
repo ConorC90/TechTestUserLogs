@@ -30,6 +30,13 @@ export const FormRow = styled.div`
 
 export const StyledForm = styled.form`
   display: grid;
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const StyledFormSection = styled.div`
+  display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(2, 1fr);
   @media (max-width: 600px) {

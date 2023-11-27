@@ -57,7 +57,6 @@ const AddServiceForm: React.FC<AddServiceFormProps> = ({ onSave }) => {
       <Button type="submit" disabled={isSaving}>
         {isSaving ? 'Saving...' : 'Save Service'}
       </Button>
-      <Button size={'small'}>Hello</Button>
     </form>
   );
 };
