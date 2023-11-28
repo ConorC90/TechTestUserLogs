@@ -1,0 +1,56 @@
+First name: Kathy
+Last name: Barker
+Year: 2016
+Make: Ford
+Model: Focus
+Service:
+Code: 1001
+Desc: Oil change
+Date: January 25, 2019
+Cost: $20.71
+Code: 1001
+Desc: Oil change
+Date: April 3, 2019
+Cost: $22.13
+Code: 1001
+Desc: Oil change
+Date: August 5, 2019
+Cost: $22.13
+Code: 1009
+Desc: Brake pad replacement
+Date: August 5, 2019
+Cost: $258.41
+First name: Ralph
+Last name: Benson
+Year: 2014
+Make: Honda
+Model: Civic
+Service:
+Code: 1001
+Desc: Oil change
+Date: March 13, 2019
+Cost: $36.42
+Code: 1003
+Desc: A/C recharge
+Date: March 13, 2019
+Cost: $206.14
+First name: Bob
+Last name: Douglas
+Year: 2016
+Make: Ford
+Model: F-150
+Service:
+Code: 1005
+Desc: Tire patch (driver's side front)
+Date: May 12, 2020
+Cost: $0
+First name: Omar
+Last name: Adams
+Year: 2017
+Make: Kia
+Model: Sorento
+Service:
+Code: 1006
+Desc: Rough shift from 2nd to 3rd
+Date: May 5, 2020
+Cost: $223.43
