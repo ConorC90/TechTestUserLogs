@@ -12,10 +12,10 @@ import CustomerType from '../../sharedInterfaces/CustomerType';
 import ServiceType from '../../sharedInterfaces/ServiceType';
 import WarningMessage from '../WarningMessage';
 import Button from '../Button';
-import { useModalContext } from '../../contexts/ModalContext';
+import { useAppContext } from '../../contexts/AppContext';
 
 const CustomerCard: React.FC<{ customer: CustomerType; customerIndex: number }> = ({ customer, customerIndex }) => {
-  const { openModal, setLocation, setCustomerindex } = useModalContext();
+  const { openModal, setLocation, setCustomerindex } = useAppContext();
 
   if (!customer) {
     return (

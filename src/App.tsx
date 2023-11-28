@@ -6,7 +6,7 @@ import CustomerForm from './componets/CustomerForm';
 import ModalFormButton from './componets/ModalFormButton/ModalFormButton';
 import CustomerType from './sharedInterfaces/CustomerType';
 import SearchBar from './componets/SearchBar';
-import { useModalContext } from './contexts/ModalContext';
+import { useAppContext } from './contexts/AppContext';
 import FileUpload from './componets/FileUploader';
 import ServiceType from './sharedInterfaces/ServiceType';
 
@@ -23,10 +23,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     localStorage.setItem('customers', JSON.stringify(allCustomers));
-    setFilteredCustomers(allCustomers);
+    // setFilteredCustomers(allCustomers);
   }, [allCustomers]);
 
-  const { closeModal, openModal, modalIsOpen, setLocation, customerIndex } = useModalContext() as {
+  const { closeModal, openModal, modalIsOpen, setLocation, customerIndex } = useAppContext() as {
     closeModal: () => void;
     openModal: () => void;
     modalIsOpen: boolean;
@@ -46,15 +46,13 @@ const App: React.FC = () => {
               newCustomer.year === existingCustomer.year,
           );
         });
-        // setFilteredCustomers([...prevCustomers, ...uniqueCustomers]);
         return [...prevCustomers, ...uniqueCustomers];
       });
       const filtered = allCustomers.filter(customer => {
         const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
         return fullName.includes(searchTerm.toLowerCase());
       });
-      console.log(allCustomers, 'allCustomers');
-      setFilteredCustomers(allCustomers);
+      setFilteredCustomers(filtered);
     }
   };
 
@@ -74,7 +72,6 @@ const App: React.FC = () => {
       };
       setAllCustomers(newCustomerArray);
 
-      // Update filteredCustomers based on the search term
       const filtered = allCustomers.filter(customer => {
         const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
         return fullName.includes(searchTerm.toLowerCase());
@@ -92,8 +89,6 @@ const App: React.FC = () => {
           services: [serviceValues as ServiceType],
         },
       ]);
-
-      // Update filteredCustomers based on the search term
       const filtered = allCustomers.filter(customer => {
         const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
         return fullName.includes(searchTerm.toLowerCase());
@@ -102,15 +97,8 @@ const App: React.FC = () => {
     }
   };
 
-  // const filteredCustomers = customersState.filter((customer: CustomerType) => {
-  //   const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
-  //   return fullName.includes(searchTerm.toLowerCase());
-  // });
-
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
-
-    // Update filteredCustomers based on the new search term
     const filtered = allCustomers.filter(customer => {
       const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
       return fullName.includes(value.toLowerCase());

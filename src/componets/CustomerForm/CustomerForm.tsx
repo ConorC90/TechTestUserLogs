@@ -2,15 +2,9 @@ import React, { useState } from 'react';
 import { FormContainer, StyledForm, FormLabel, FormInput, StyledFormSection } from './CustomerForm.styles';
 import Button from '../Button';
 import WarningMessage from '../WarningMessage';
-import { useModalContext } from '../../contexts/ModalContext';
+import { useAppContext } from '../../contexts/AppContext';
 import ServiceType from '../../sharedInterfaces/ServiceType';
 
-// interface ServiceValues {
-//   code: number | string;
-//   desc: string;
-//   date: string;
-//   cost: number | string;
-// }
 interface CustomerFormProps {
   onSave: (
     serviceValues: ServiceType,
@@ -35,7 +29,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
 
-  const { location } = useModalContext();
+  const { location } = useAppContext();
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,10 +44,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
       setIsSaving(true);
       setTimeout(() => {
         onSave(serviceValues, firstName, lastName, make, model, year);
-        // const form = document.getElementById('serviceLogForm') as HTMLFormElement;
-        // if (form) {
-        // form.reset();
-        // }
         resetForm();
         setIsSaving(false);
       }, 2000);

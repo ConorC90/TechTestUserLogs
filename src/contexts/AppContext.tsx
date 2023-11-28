@@ -1,6 +1,6 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 
-interface ModalContextProps {
+interface AppContextProps {
   modalIsOpen: boolean;
   openModal: () => void;
   closeModal: () => void;
@@ -10,21 +10,21 @@ interface ModalContextProps {
   setCustomerindex: (location: number) => void;
 }
 
-const ModalContext = createContext<ModalContextProps | undefined>(undefined);
+const AppContext = createContext<AppContextProps | undefined>(undefined);
 
-export const useModalContext = (): ModalContextProps => {
-  const context = useContext(ModalContext);
+export const useAppContext = (): AppContextProps => {
+  const context = useContext(AppContext);
   if (!context) {
-    throw new Error('useModalContext must be used within a ModalProvider');
+    throw new Error('useAppContext must be used within a AppProvider');
   }
   return context;
 };
 
-interface ModalProviderProps {
+interface AppProviderProps {
   children: ReactNode;
 }
 
-export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
+export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [modalIsOpen, setModalIsOpen] = React.useState(false);
   const [location, setLocation] = React.useState<string | null>(null);
   const [customerIndex, setCustomerindex] = React.useState<number | null>(null);
@@ -40,10 +40,10 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   };
 
   return (
-    <ModalContext.Provider
+    <AppContext.Provider
       value={{ modalIsOpen, openModal, closeModal, location, setLocation, customerIndex, setCustomerindex }}
     >
       {children}
-    </ModalContext.Provider>
+    </AppContext.Provider>
   );
 };

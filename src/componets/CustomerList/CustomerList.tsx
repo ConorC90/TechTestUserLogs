@@ -1,6 +1,6 @@
 import React from 'react';
 import { CustomerListContainer } from './CustomerList.styles';
-import CardContainer from '../CustomerCard/CustomerCard';
+import CustomerCard from '../CustomerCard/CustomerCard';
 import CustomerType from '../../sharedInterfaces/CustomerType';
 import WarningMessage from '../WarningMessage';
 interface CustomerListProps {
@@ -14,7 +14,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ customers }) => {
   return (
     <CustomerListContainer>
       {customers.map((customer, index) => (
-        <CardContainer customerIndex={index} customer={customer} key={index}></CardContainer>
+        <CustomerCard customerIndex={index} customer={customer} key={index}></CustomerCard>
       ))}
     </CustomerListContainer>
   );
