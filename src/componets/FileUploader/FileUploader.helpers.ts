@@ -1,6 +1,8 @@
-export const parseText = (text: string): any[] => {
+import CustomerType from '../../sharedInterfaces/CustomerType';
+
+export const parseText = (text: string): CustomerType[] => {
   const lines = text.split('\n');
-  const customers: any[] = [];
+  const customers: CustomerType[] = [];
   let currentPerson: any | null = null;
 
   lines.forEach(line => {

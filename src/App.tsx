@@ -46,7 +46,6 @@ const App: React.FC = () => {
         });
         return [...prevCustomers, ...uniqueCustomers];
       });
-      console.log(allCustomers, 'allCustomers');
       const filtered = allCustomers.filter(customer => {
         const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
         return fullName.includes(searchTerm.toLowerCase());
