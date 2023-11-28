@@ -20,14 +20,6 @@ export const FormInput = styled.input`
   padding: 10px;
 `;
 
-export const FormRow = styled.div`
-  margin-top: 20px;
-  width: 100%;
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
 export const StyledForm = styled.form`
   display: grid;
   @media (max-width: 600px) {

@@ -17,6 +17,12 @@ import { useAppContext } from '../../contexts/AppContext';
 const CustomerCard: React.FC<{ customer: CustomerType; customerIndex: number }> = ({ customer, customerIndex }) => {
   const { openModal, setLocation, setCustomerindex } = useAppContext();
 
+  const handelButtonClick = () => {
+    setCustomerindex(customerIndex);
+    setLocation('addService');
+    openModal();
+  };
+
   if (!customer) {
     return (
       <CardContainer>
@@ -24,12 +30,6 @@ const CustomerCard: React.FC<{ customer: CustomerType; customerIndex: number }> 
       </CardContainer>
     );
   }
-
-  const handelButtonClick = () => {
-    setCustomerindex(customerIndex);
-    setLocation('addService');
-    openModal();
-  };
 
   return (
     <CardContainer>
@@ -63,7 +63,7 @@ const CustomerCard: React.FC<{ customer: CustomerType; customerIndex: number }> 
               <ServiceDetailsListItem>Description: {service.desc}</ServiceDetailsListItem>
               <ServiceDetailsListItem>Code: {service.code}</ServiceDetailsListItem>
               <ServiceDetailsListItem>Date: {service.date}</ServiceDetailsListItem>
-              <ServiceDetailsListItem>Cost: ${service.cost}</ServiceDetailsListItem>
+              <ServiceDetailsListItem>Cost: {service.cost}</ServiceDetailsListItem>
             </ServiceDetailsList>
           </ServiceListItem>
         ))}

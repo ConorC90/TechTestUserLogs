@@ -15,15 +15,13 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [uploadedData, setUploadedData] = useState<CustomerType[]>([]);
   const existingCustomers: CustomerType[] = storedCustomersJSON ? JSON.parse(storedCustomersJSON) : [];
-  //maybe you can just add:
-  // const [customersState, setCustomers] = useState<CustomerType[]>(JSON.parse(storedCustomersJSON));
-
   const [allCustomers, setAllCustomers] = useState<CustomerType[]>(existingCustomers);
   const [filteredCustomers, setFilteredCustomers] = useState<CustomerType[]>(allCustomers);
 
   useEffect(() => {
     localStorage.setItem('customers', JSON.stringify(allCustomers));
-    // setFilteredCustomers(allCustomers);
+    setSearchTerm('');
+    setFilteredCustomers(allCustomers);
   }, [allCustomers]);
 
   const { closeModal, openModal, modalIsOpen, setLocation, customerIndex } = useAppContext() as {
@@ -48,6 +46,7 @@ const App: React.FC = () => {
         });
         return [...prevCustomers, ...uniqueCustomers];
       });
+      console.log(allCustomers, 'allCustomers');
       const filtered = allCustomers.filter(customer => {
         const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
         return fullName.includes(searchTerm.toLowerCase());
@@ -64,11 +63,19 @@ const App: React.FC = () => {
     model?: string,
     year?: number,
   ) => {
+    const formattedCost =
+      typeof serviceValues.cost === 'number'
+        ? serviceValues.cost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+        : serviceValues.cost;
+
     if (customerIndex || customerIndex === 0) {
       const newCustomerArray = [...allCustomers];
       newCustomerArray[customerIndex] = {
         ...newCustomerArray[customerIndex],
-        services: [...(newCustomerArray[customerIndex].services ?? []), serviceValues as ServiceType],
+        services: [
+          ...(newCustomerArray[customerIndex].services ?? []),
+          { ...serviceValues, cost: formattedCost } as ServiceType,
+        ],
       };
       setAllCustomers(newCustomerArray);
 
@@ -86,7 +93,7 @@ const App: React.FC = () => {
           year: year || 0,
           make: make || '',
           model: model || '',
-          services: [serviceValues as ServiceType],
+          services: [{ ...serviceValues, cost: formattedCost } as ServiceType],
         },
       ]);
       const filtered = allCustomers.filter(customer => {

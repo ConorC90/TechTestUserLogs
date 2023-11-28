@@ -6,6 +6,7 @@ export const StickyNavBar = styled.div`
   top: 0;
   background-color: #f1f1f1;
   padding: 10px;
+  padding-bottom: 20px;
   text-align: center;
 `;
 

@@ -7,6 +7,7 @@ export const CardContainer = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-bottom: 20px;
+  min-width: 300px;
 `;
 
 export const CardHeader = styled.div`

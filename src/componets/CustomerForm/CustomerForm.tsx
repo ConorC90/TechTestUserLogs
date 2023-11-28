@@ -4,7 +4,6 @@ import Button from '../Button';
 import WarningMessage from '../WarningMessage';
 import { useAppContext } from '../../contexts/AppContext';
 import ServiceType from '../../sharedInterfaces/ServiceType';
-
 interface CustomerFormProps {
   onSave: (
     serviceValues: ServiceType,
@@ -80,7 +79,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
   return (
     <FormContainer>
       <h2>Log new customer log</h2>
-      <StyledForm onSubmit={handleSave} id="serviceLogForm">
+      <StyledForm onSubmit={handleSave}>
         <StyledFormSection>
           {location === 'addCustomer' && (
             <>
