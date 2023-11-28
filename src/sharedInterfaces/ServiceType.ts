@@ -1,8 +1,8 @@
 type ServiceType = {
-  code: number;
-  desc: string;
+  code: number | string;
+  desc?: string;
   date: string;
-  cost: number;
+  cost: number | string;
 };
 
 export default ServiceType;

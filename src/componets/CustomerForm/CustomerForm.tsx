@@ -3,15 +3,17 @@ import { FormContainer, StyledForm, FormLabel, FormInput, StyledFormSection } fr
 import Button from '../Button';
 import WarningMessage from '../WarningMessage';
 import { useModalContext } from '../../contexts/ModalContext';
+import ServiceType from '../../sharedInterfaces/ServiceType';
 
-interface ServiceValues {
-  code: number | string;
-  date: string;
-  cost: number | string;
-}
+// interface ServiceValues {
+//   code: number | string;
+//   desc: string;
+//   date: string;
+//   cost: number | string;
+// }
 interface CustomerFormProps {
   onSave: (
-    serviceValues: ServiceValues,
+    serviceValues: ServiceType,
     firstName?: string,
     lastName?: string,
     make?: string,
@@ -39,8 +41,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ onSave }) => {
     e.preventDefault();
 
     if (validateForm()) {
-      const serviceValues: ServiceValues = {
+      const serviceValues: ServiceType = {
         code,
+        desc,
         cost,
         date,
       };

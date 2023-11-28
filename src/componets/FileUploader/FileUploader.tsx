@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
-
+import CustomerType from '../../sharedInterfaces/CustomerType';
 export interface DataConfig {
   firstName: string;
   lastName: string;
@@ -15,12 +15,12 @@ export interface DataConfig {
 }
 
 interface FileUploadProps {
-  config: DataConfig;
-  onDataUpload: (data: DataConfig[]) => void;
+  config: CustomerType;
+  onDataUpload: (data: CustomerType[]) => void;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ config, onDataUpload }) => {
-  const [data, setData] = useState<DataConfig[]>([]);
+  const [data, setData] = useState<CustomerType[]>([]);
 
   const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -30,7 +30,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ config, onDataUpload }) => {
 
       reader.onload = e => {
         const content = e.target?.result as string;
-        const parsedData = parseText(content, config);
+        const parsedData = parseText(content);
         setData(parsedData);
       };
 

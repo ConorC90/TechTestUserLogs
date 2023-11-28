@@ -8,26 +8,58 @@ import CustomerType from './sharedInterfaces/CustomerType';
 import SearchBar from './componets/SearchBar';
 import { useModalContext } from './contexts/ModalContext';
 import FileUpload from './componets/FileUploader';
+import ServiceType from './sharedInterfaces/ServiceType';
 
 const App: React.FC = () => {
-  const storedCustomers = localStorage.getItem('customers');
+  const storedCustomersJSON = localStorage.getItem('customers');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [uploadedData, setUploadedData] = useState<CustomerType[]>([]);
-  const initialCustomers = storedCustomers ? JSON.parse(storedCustomers) : uploadedData;
-  const [customersState, setCustomers] = useState(initialCustomers);
+  const existingCustomers: CustomerType[] = storedCustomersJSON ? JSON.parse(storedCustomersJSON) : [];
+  //maybe you can just add:
+  // const [customersState, setCustomers] = useState<CustomerType[]>(JSON.parse(storedCustomersJSON));
+
+  const [allCustomers, setAllCustomers] = useState<CustomerType[]>(existingCustomers);
+  const [filteredCustomers, setFilteredCustomers] = useState<CustomerType[]>(allCustomers);
 
   useEffect(() => {
-    localStorage.setItem('customers', JSON.stringify(customersState));
-  }, [customersState]);
+    localStorage.setItem('customers', JSON.stringify(allCustomers));
+    setFilteredCustomers(allCustomers);
+  }, [allCustomers]);
 
-  const { closeModal, openModal, modalIsOpen, setLocation, customerIndex } = useModalContext();
+  const { closeModal, openModal, modalIsOpen, setLocation, customerIndex } = useModalContext() as {
+    closeModal: () => void;
+    openModal: () => void;
+    modalIsOpen: boolean;
+    setLocation: (location: string) => void;
+    customerIndex?: number;
+  };
 
-  const handleDataUpload = (data: any[]) => {
-    setUploadedData(data);
+  const handleDataUpload = (data: CustomerType[]) => {
+    if (JSON.stringify(data) !== JSON.stringify(uploadedData)) {
+      setUploadedData(data);
+      setAllCustomers(prevCustomers => {
+        const uniqueCustomers = data.filter(newCustomer => {
+          return !prevCustomers.some(
+            existingCustomer =>
+              newCustomer.firstName === existingCustomer.firstName &&
+              newCustomer.lastName === existingCustomer.lastName &&
+              newCustomer.year === existingCustomer.year,
+          );
+        });
+        // setFilteredCustomers([...prevCustomers, ...uniqueCustomers]);
+        return [...prevCustomers, ...uniqueCustomers];
+      });
+      const filtered = allCustomers.filter(customer => {
+        const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
+        return fullName.includes(searchTerm.toLowerCase());
+      });
+      console.log(allCustomers, 'allCustomers');
+      setFilteredCustomers(allCustomers);
+    }
   };
 
   const handleSave = async (
-    serviceValues: { code: number | string; date: string; cost: number | string },
+    serviceValues: { code?: number | string; desc?: string; date?: string; cost?: number | string },
     firstName?: string,
     lastName?: string,
     make?: string,
@@ -35,34 +67,55 @@ const App: React.FC = () => {
     year?: number,
   ) => {
     if (customerIndex || customerIndex === 0) {
-      const newCustomerArray = [...filteredCustomers];
+      const newCustomerArray = [...allCustomers];
       newCustomerArray[customerIndex] = {
         ...newCustomerArray[customerIndex],
-        services: [...newCustomerArray[customerIndex].services, serviceValues],
+        services: [...(newCustomerArray[customerIndex].services ?? []), serviceValues as ServiceType],
       };
-      setCustomers(newCustomerArray);
+      setAllCustomers(newCustomerArray);
+
+      // Update filteredCustomers based on the search term
+      const filtered = allCustomers.filter(customer => {
+        const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
+        return fullName.includes(searchTerm.toLowerCase());
+      });
+      setFilteredCustomers(filtered);
     } else {
-      setCustomers((prevCustomers: CustomerType[]) => [
+      setAllCustomers((prevCustomers: CustomerType[]) => [
         ...prevCustomers,
         {
-          firstName: firstName,
-          lastName: lastName,
-          year: year,
-          make: make,
-          model: model,
-          services: [serviceValues],
+          firstName: firstName || '',
+          lastName: lastName || '',
+          year: year || 0,
+          make: make || '',
+          model: model || '',
+          services: [serviceValues as ServiceType],
         },
       ]);
+
+      // Update filteredCustomers based on the search term
+      const filtered = allCustomers.filter(customer => {
+        const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
+        return fullName.includes(searchTerm.toLowerCase());
+      });
+      setFilteredCustomers(filtered);
     }
   };
 
-  const filteredCustomers = customersState.filter((customer: CustomerType) => {
-    const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
-    return fullName.includes(searchTerm.toLowerCase());
-  });
+  // const filteredCustomers = customersState.filter((customer: CustomerType) => {
+  //   const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
+  //   return fullName.includes(searchTerm.toLowerCase());
+  // });
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
+
+    // Update filteredCustomers based on the new search term
+    const filtered = allCustomers.filter(customer => {
+      const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
+      return fullName.includes(value.toLowerCase());
+    });
+    setFilteredCustomers(filtered);
   };
 
   const handleButtonClick = () => {
@@ -86,7 +139,7 @@ const App: React.FC = () => {
         <div className="content-container">
           <h1>Auto Repair Shop App</h1>
           <FileUpload config={dataConfig} onDataUpload={handleDataUpload} />
-          {customersState.length > 0 && <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />}
+          {allCustomers.length > 0 && <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />}
 
           <CustomerList customers={filteredCustomers} />
           <ModalFormButton
